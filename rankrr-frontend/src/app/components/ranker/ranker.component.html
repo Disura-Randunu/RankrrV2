@@ -1,0 +1,207 @@
+<div class="container mt-5">
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h2 class="font-weight-bold">Process Custom Dataset</h2>
+            <p>Rank and get the top recommendations from a custom dataset to compare the methodologies</p>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col">
+            <form (ngSubmit)="onSubmit()">
+                <div class="mb-5">
+                    <div class="row gx-4 gy-3">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="input-group">
+                                <input class="form-control" type="file" id="formFile" (change)="onChange($event)" name="file">     
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="input-group">
+                                <div class="input-group-text">Product ID Column</div>
+                                <input
+                                [(ngModel)]="product_id_column"
+                                type="text"
+                                class="form-control"
+                                id="product_id_column"
+                                name="product_id_column"
+                                placeholder="product_id"
+                                />         
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="input-group">
+                                <div class="input-group-text">Review Text Column</div>
+                                <input
+                                [(ngModel)]="review_text_column"
+                                type="text"
+                                class="form-control"
+                                id="review_text_column"
+                                name="review_text_column"
+                                placeholder="review_body"
+                                />         
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                          <div class="input-group">
+                              <div class="input-group-text">Max Products Amount</div>
+                              <input
+                              [(ngModel)]="max_products_amount"
+                              type="number"
+                              class="form-control"
+                              id="max_products_amount"
+                              name="max_products_amount"
+                              placeholder="max_products_amount"
+                              />         
+                          </div>
+                      </div>
+                        <div class="col-sm-12 d-grid">
+                            <button class="btn btn-primary px-5" type="submit" [disabled]="rank_data_loading || !validateForm()">
+                                <span
+                                  *ngIf="rank_data_loading"
+                                  class="spinner-border spinner-border-sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                ></span>
+                                Submit
+                              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div *ngIf="!rank_data_loading && products_with_extra" class="row row-cols-1 row-cols-md-2 mb-2">
+      <div class="col">
+          <h5 class="font-weight-bold">With Emoji & Emphasized Text Interpretation</h5>
+        </div>
+        <div class="col">
+          <h5 class="font-weight-bold">Without Emoji & Emphasized Text Interpretation</h5>
+        </div>
+    </div>
+
+    <div *ngIf="!rank_data_loading && products_with_extra" class="row row-cols-1 row-cols-md-2 mb-5">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Product ID</th>
+                <th scope="col">Sentiment Score</th>
+                <th scope="col">Rank Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products_with_extra; let index = index">
+                <td>{{ product.rank }}</td>
+                <td data-bs-toggle="modal" data-bs-target="#reviews_sentiments_modal" (click)="showReviewsSentimentsDialog(product.product_id)"><a class="link-primary">{{ product.product_id }}</a></td>
+                <td>{{ product.sentiment_score }}</td>
+                <td [className]="getRankChangeColor(getRankChange(product.product_id))">
+                  {{ getRankChange(product.product_id) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Product ID</th>
+                <th scope="col">Sentiment Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let product of products_without_extra; let index = index"
+              >
+                <td>{{ product.rank }}</td>
+                <td>{{ product.product_id }}</td>
+                <td>{{ product.sentiment_score }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="reviews_sentiments_modal" tabindex="-1" aria-labelledby="reviews_sentiments_modal" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Reviews Sentiments - {{reviews_sentiment_product_id}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center" *ngIf="loading_reviews_sentiments">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="table-responsive" *ngIf="!loading_reviews_sentiments">
+          <!-- bootsrap table with "with extra" and "without extra" groups which have two columns of "scores" and "summary" -->
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th rowspan="3" scope="col">Review</th>
+                <th colspan="4" scope="col">With Emoji & Emphasized Text</th>
+                <th colspan="4" scope="col">Without Emoji & Emphasized Text</th>
+              </tr>
+              <tr>
+                <th colspan="3" scope="col">Sentiment Scores</th>
+                <th rowspan="3" scope="col">Sentiment Summary</th>
+                <th colspan="3" scope="col">Sentiment Scores</th>
+                <th rowspan="3" scope="col">Sentiment Summary</th>
+              </tr>
+              <tr>
+                <th>Negative</th>
+                <th>Neutral</th>
+                <th>Positive</th>
+                <th>Negative</th>
+                <th>Neutral</th>
+                <th>Positive</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let item of reviews_sentiments; let index = index"
+              >
+                <td>{{ item.review }}</td>
+                <td>{{ item.sentiment_with_extra.neg }}</td>
+                <td>{{ item.sentiment_with_extra.neu }}</td>
+                <td>{{ item.sentiment_with_extra.pos }}</td>
+                <td>
+                  <app-sentiment-summary-bar 
+                    [negative]="item.sentiment_with_extra.neg * 100"
+                    [neutral]="item.sentiment_with_extra.neu * 100"
+                    [positive]="item.sentiment_with_extra.pos * 100">
+                  </app-sentiment-summary-bar>
+                </td>
+                <td>{{ item.sentiment_without_extra.neg }}</td>
+                <td>{{ item.sentiment_without_extra.neu }}</td>
+                <td>{{ item.sentiment_without_extra.pos }}</td>
+                <td>
+                  <app-sentiment-summary-bar 
+                    [negative]="item.sentiment_without_extra.neg * 100"
+                    [neutral]="item.sentiment_without_extra.neu * 100"
+                    [positive]="item.sentiment_without_extra.pos * 100">
+                  </app-sentiment-summary-bar>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

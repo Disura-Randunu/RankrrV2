@@ -1,0 +1,125 @@
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col text-center mb-3">
+      <h2>Text Cleaner & Analyzer</h2>
+      <p>
+        Clean & Analyze text with emphasized informal words with repeated letters such as 'gooood'<br>
+        or intentionaly misspelled words like 'puuuuuurfct'
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <div class="row gy-2">
+            <div class="col-sm-12 col-md-10">
+              <div class="input-group">
+                <div class="input-group-text">Text</div>
+                <input
+                  [(ngModel)]="text"
+                  type="text"
+                  class="form-control"
+                  id="text"
+                  name="text"
+                  placeholder="Ex: Design is somewhat normal. But the quality is so puuuuuurfecttt"
+                />
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-2 d-grid">
+              <button
+                class="btn btn-primary px-5"
+                type="submit"
+                [disabled]="analyzing || !text"
+              >
+                <span
+                  *ngIf="analyzing"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div *ngIf="ml" class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th rowspan="2" scope="col">Method</th>
+              <th rowspan="2" scope="col">Cleaned Text</th>
+              <th colspan="3" scope="col">Sentiment Scores</th>
+              <th rowspan="2" scope="col">Sentiment Summary</th>
+            </tr>
+            <tr>
+              <th>Negative</th>
+              <th>Neutral</th>
+              <th>Positive</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Research Approach (ML)</th>
+              <td>{{ ml.cleaned_text }}</td>
+              <td>{{ ml.sentiment_scores.neg }}</td>
+              <td>{{ ml.sentiment_scores.neu }}</td>
+              <td>{{ ml.sentiment_scores.pos }}</td>
+              <td>
+                <app-sentiment-summary-bar
+                  [negative]="ml.sentiment_scores.neg * 100"
+                  [neutral]="ml.sentiment_scores.neu * 100"
+                  [positive]="ml.sentiment_scores.pos * 100"
+                ></app-sentiment-summary-bar>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Exisiting Method 1 (Advanced)</th>
+              <td>{{ advanced.cleaned_text }}</td>
+              <td>{{ advanced.sentiment_scores.neg }}</td>
+              <td>{{ advanced.sentiment_scores.neu }}</td>
+              <td>{{ advanced.sentiment_scores.pos }}</td>
+              <td>
+                <app-sentiment-summary-bar
+                  [negative]="advanced.sentiment_scores.neg * 100"
+                  [neutral]="advanced.sentiment_scores.neu * 100"
+                  [positive]="advanced.sentiment_scores.pos * 100"
+                ></app-sentiment-summary-bar>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Exisiting Method 2 (Baisc)</th>
+              <td>{{ basic.cleaned_text }}</td>
+              <td>{{ basic.sentiment_scores.neg }}</td>
+              <td>{{ basic.sentiment_scores.neu }}</td>
+              <td>{{ basic.sentiment_scores.pos }}</td>
+              <td>
+                <app-sentiment-summary-bar
+                  [negative]="basic.sentiment_scores.neg * 100"
+                  [neutral]="basic.sentiment_scores.neu * 100"
+                  [positive]="basic.sentiment_scores.pos * 100"
+                ></app-sentiment-summary-bar>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col">
+      <ul>
+        <li>Basic - Removes the repeating letters</li>
+        <li>Advanced - Removes the repeating letters & get the neareset suggestion from a dictionary</li>
+        <li>ML - Predict the actual word through the Machine Learning model</li>
+      </ul>
+    </div>
+  </div>
+</div>

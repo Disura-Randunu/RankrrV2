@@ -1,0 +1,28 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Product ID</th>
+        <th scope="col">Sentiment Score</th>
+        <th scope="col">Rank Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products; let index = index">
+        <!-- <td>{{ product.rank }}</td>
+        <td
+          data-bs-toggle="modal"
+          data-bs-target="#reviews_sentiments_modal"
+          (click)="showReviewsSentimentsDialog(product.product_id)"
+        >
+          <a class="link-primary">{{ product.product_id }}</a>
+        </td>
+        <td>{{ product.sentiment_score }}</td>
+        <td [className]="getRankChangeColor(getRankChange(product.product_id))">
+          {{ getRankChange(product.product_id) }}
+        </td> -->
+      </tr>
+    </tbody>
+  </table>
+</div>

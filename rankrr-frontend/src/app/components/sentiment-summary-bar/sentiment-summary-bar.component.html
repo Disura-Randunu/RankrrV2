@@ -1,0 +1,11 @@
+<div class="progress-stacked">
+    <div class="progress" role="progressbar" aria-label="Negative" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{width: negativePercentage}">
+      <div class="progress-bar bg-danger">{{negative.toFixed(0)}}</div>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Neutral" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{width: neutralPercentage}">
+      <div class="progress-bar bg-warning">{{neutral.toFixed(0)}}</div>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Positive" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{width: positivePercentage}">
+      <div class="progress-bar bg-success">{{positive.toFixed(0)}}</div>
+    </div>
+</div>
