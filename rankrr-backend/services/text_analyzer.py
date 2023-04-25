@@ -1,8 +1,9 @@
 import pickle
 import re
 import utils.text as text_util
+import utils.files as file_util
 
-with open('../model_v9.pkl', 'rb') as file:
+with open(file_util.get_emph_text_model_path(), 'rb') as file:
     model = pickle.load(file)
 
 

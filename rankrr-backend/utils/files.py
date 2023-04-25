@@ -10,3 +10,6 @@ def get_demo_data_file_path():
 
 def get_upoad_path():
     return os.path.join(baseDir, '..', 'uploads')
+
+def get_emph_text_model_path():
+    return os.path.join(baseDir, '..', 'model_v9.pkl')
