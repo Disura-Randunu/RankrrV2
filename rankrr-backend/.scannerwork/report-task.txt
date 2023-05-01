@@ -1,0 +1,6 @@
+projectKey=rankrr-backend
+serverUrl=http://localhost:9000
+serverVersion=10.0.0.68432
+dashboardUrl=http://localhost:9000/dashboard?id=rankrr-backend
+ceTaskId=AYfTWxuTxGPo6ohFpZnu
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYfTWxuTxGPo6ohFpZnu

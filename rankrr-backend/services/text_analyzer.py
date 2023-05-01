@@ -2,6 +2,7 @@ import pickle
 import re
 import utils.text as text_util
 import utils.files as file_util
+import asyncio
 
 with open(file_util.get_emph_text_model_path(), 'rb') as file:
     model = pickle.load(file)
@@ -10,6 +11,12 @@ with open(file_util.get_emph_text_model_path(), 'rb') as file:
 def predict_actual_word(emphasized_word):
     return model.predict([emphasized_word])[0]
 
+
+async def get_all_preprocessed_text():
+    ml = await get_ml_preprocessed_text()
+    advance = await get_advanced_preprocessed_text()
+    basic = await get_basic_preprocessed_text()
+    return {'ml': ml, 'advance': advance, 'basic': basic}
 
 def get_ml_preprocessed_text(text):
     words = text_util.get_words(text)
@@ -32,7 +39,6 @@ def get_advanced_preprocessed_text(text):
                 words[index] = suggestions[0] if len(suggestions) > 0 else corrected
     
     return " ".join(words)
-
 
             
 def get_basic_preprocessed_text(text):

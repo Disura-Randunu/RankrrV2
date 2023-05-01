@@ -43,30 +43,34 @@ def get_ranked_products( df: pd.DataFrame, product_id_col, review_text_col, max_
     else:
         sia = text_sia
 
+    # counts_dict = df[product_id_col].value_counts().to_dict()
+    # uniques_and_counts = dict(sorted(counts_dict.items(), key=lambda x: x[1], reverse=True))
+    # uniques_and_counts = dict(list(uniques_and_counts.items())[:max_products_amount])
+    # max_reviews_amount = min(uniques_and_counts.values())
+
     uniques_and_counts = get_unique_products_and_counts(df, product_id_col, max_products_amount)
     max_reviews_amount = min(uniques_and_counts.values())
 
-    for product_id in uniques_and_counts.keys():
+    emojis = None
 
+    sentiments = {}
+    if consider_emoji:
+        sia = emoji_sia
+    else:
+        sia = text_sia
+
+    for product_id in uniques_and_counts.keys():
         records = get_top_records(df, product_id, product_id_col, max_reviews_amount)
-        
         for i, record in records.iterrows():
-            
             record[review_text_col] = record[review_text_col].lower()
-            
             if consider_emoji:
                 emojis = emoji_util.extract_emojis(record[review_text_col])
-            
             record[review_text_col] = emoji_util.remove_emojis(record[review_text_col])
-            
             if consider_emph_text:
                 record[review_text_col] = text_analyzer.get_ml_preprocessed_text(record[review_text_col])
-
             record[review_text_col] = sentiment_analyzer.preprocess_text(record[review_text_col])
-            
             if consider_emoji:
                 record[review_text_col] = record[review_text_col] + " " + " ".join(emojis)
-
             if product_id in sentiments:
                 sentiments[product_id].append(sia.polarity_scores(record[review_text_col])['pos'])
             else:
@@ -74,7 +78,6 @@ def get_ranked_products( df: pd.DataFrame, product_id_col, review_text_col, max_
 
     for key, value in sentiments.items():
         sentiments[key] = np.mean(value)
-
     sorted_data = sorted(sentiments.items(), key=lambda x: x[1], reverse=True)
     return [{'product_id': key, 'sentiment_score': val, 'rank': rank} for rank, (key, val) in enumerate(sorted_data, start=1)]
 
