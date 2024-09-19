@@ -1,4 +1,5 @@
 # Rankrr - Sentiment based product ranking with emoji &amp; emphasized informal text
+Sentiment based product ranking with emoji & emphasized informal text
 
 ### By Disura Randunu Bandara | W1761865 | 2018008
 
